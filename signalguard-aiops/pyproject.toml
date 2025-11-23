@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "signalguard-aiops"
+version = "0.1.0"
+description = "A lightweight AIOps / observability ML toolkit"
+authors = [
+  { name = "Danial Amin" }
+]
+requires-python = ">=3.9"
+dependencies = [
+  "numpy",
+  "pandas",
+  "requests",
+  "scikit-learn",
+  "prophet",
+  "tensorflow>=2.9",  # or "torch" if you prefer PyTorch and adapt the code
+]

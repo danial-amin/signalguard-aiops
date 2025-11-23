@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>signalguard-aiops · Time-Series AIOps Toolkit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="styles.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div>
+        <h1>signalguard-aiops</h1>
+        <p>Time-series and metrics AIOps toolkit for anomaly detection and SLO-aware incident signals.</p>
+      </div>
+      <div class="header-meta">
+        <span class="pill">Python package</span>
+        <span id="last-updated">Part of the SignalGuard observability suite</span>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="cards">
+        <div class="card">
+          <h2>What it is</h2>
+          <p class="muted">
+            <strong>signalguard-aiops</strong> is a lightweight library for time-series anomaly detection:
+            z-score, EMA, Isolation Forest, LOF, Prophet residuals, LSTM autoencoders, and opinionated AIOps recipes.
+          </p>
+        </div>
+        <div class="card">
+          <h2>Core use cases</h2>
+          <p class="muted">
+            • Error-rate incident detection<br />
+            • Latency SLO breach detection (p95/p99)<br />
+            • Ensemble anomaly scoring across detectors<br />
+            • Prometheus-integrated incident pipelines
+          </p>
+        </div>
+        <div class="card">
+          <h2>Tech stack</h2>
+          <p class="muted">
+            Python · NumPy · Pandas · scikit-learn · Prophet · TensorFlow · Prometheus HTTP API adapter.
+          </p>
+        </div>
+        <div class="card">
+          <h2>Repository</h2>
+          <p class="muted">
+            <a href="https://github.com/danial-amin/signalguard-aiops" target="_blank" rel="noopener">
+              View the GitHub repository →
+            </a>
+          </p>
+        </div>
+      </section>
+
+      <section class="anomalies">
+        <div class="anomaly-header">
+          <h3>Quick start</h3>
+          <p class="muted">
+            Install in editable mode and run the included recipes on synthetic or Prometheus-backed metrics.
+          </p>
+        </div>
+        <div class="anomaly-grid">
+          <div class="anomaly-card">
+            <div class="anomaly-title-row">
+              <span>Install</span>
+              <span class="badge-ok">CLI</span>
+            </div>
+            <div class="anomaly-body">
+              <pre><code>git clone https://github.com/danial-amin/signalguard-aiops
+cd signalguard-aiops
+pip install -e .</code></pre>
+            </div>
+          </div>
+          <div class="anomaly-card">
+            <div class="anomaly-title-row">
+              <span>Error-rate recipe</span>
+              <span class="badge-warn">Metrics</span>
+            </div>
+            <div class="anomaly-body">
+              <pre><code>from signalguard_aiops.metrics import TimeSeries
+from signalguard_aiops.recipes import ErrorRateZScoreRecipe
+from signalguard_aiops.incidents import IncidentScorer
+
+ts = TimeSeries.from_lists(timestamps, values, name="error_rate")
+recipe = ErrorRateZScoreRecipe(service="checkout")
+incident = recipe.run(ts)
+severity = IncidentScorer.simple_severity(incident)</code></pre>
+            </div>
+          </div>
+          <div class="anomaly-card">
+            <div class="anomaly-title-row">
+              <span>Latency SLO recipe</span>
+              <span class="badge-warn">SLO</span>
+            </div>
+            <div class="anomaly-body">
+              <pre><code>from signalguard_aiops.recipes import LatencySLORecipe
+
+recipe = LatencySLORecipe(
+    service="payments",
+    metric="latency_p95",
+    slo_ms=300.0,
+)
+incident = recipe.run(ts)</code></pre>
+            </div>
+          </div>
+          <div class="anomaly-card">
+            <div class="anomaly-title-row">
+              <span>Prometheus integration</span>
+              <span class="badge-danger">AIOps</span>
+            </div>
+            <div class="anomaly-body">
+              <pre><code>from signalguard_aiops.pipelines import PrometheusSeriesFetcher
+
+fetcher = PrometheusSeriesFetcher("http://localhost:9090")
+series = fetcher.fetch_range(
+    query='rate(app_request_errors_total[5m])',
+    start_ts=..., end_ts=..., step="30s"
+)</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="charts">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>Included detectors</h3>
+            <p class="muted">
+              ZScoreDetector · EMADetector · IsolationForestDetector · LOFDetector · ProphetResidualDetector · LSTMAutoencoderDetector
+            </p>
+          </div>
+          <p class="muted">
+            These detectors are exposed behind a common interface and can be composed into higher-level recipes for error-rate incidents,
+            latency SLOs, and ensemble scoring across heterogeneous models.
+          </p>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3>AIOps recipes</h3>
+            <p class="muted">
+              Opinionated building blocks for production-style monitoring flows.
+            </p>
+          </div>
+          <p class="muted">
+            <strong>Examples:</strong><br />
+            • <code>ErrorRateZScoreRecipe</code>: simple, interpretable baseline.<br />
+            • <code>ErrorRateIForestRecipe</code>: non-Gaussian error distributions.<br />
+            • <code>LatencySLORecipe</code>: SLO-aware latency anomaly detection.<br />
+            • <code>EnsembleErrorRateRecipe</code>: majority-vote ensemble combining multiple detectors.
+          </p>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
