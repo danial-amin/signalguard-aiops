@@ -1,84 +1,53 @@
-📜 signalguard-logs
-Lightweight Log Intelligence and AIOps Toolkit
+# 📜 signalguard-logs
+
+**Lightweight Log Intelligence and AIOps Toolkit**
+
 Structured parsing • Template extraction • Semantic anomaly detection • Error burst detection • New pattern detection
 
-🔍 Overview
+## 🔍 Overview
+
 signalguard-logs is a modular AIOps toolkit designed for log analysis, log anomaly detection, and log-based incident signals.
 It complements the metric-focused signalguard-aiops package, forming the second half of a complete AIOps suite:
 
-
-signalguard-aiops: time-series & metrics intelligence
-
-
-signalguard-logs: log intelligence & pattern discovery
-
+- **signalguard-aiops**: time-series & metrics intelligence
+- **signalguard-logs**: log intelligence & pattern discovery
 
 This package includes:
-✔ Log ingestion & structuring
 
+✔ **Log ingestion & structuring**
+- Regex-based log parsing
+- JSON log parsing
+- Unified LogRecord / LogStream abstraction
 
-Regex-based log parsing
+✔ **Template extraction (naive Drain-style)**
+- Auto-replace numbers, hex, IDs
+- Quick pattern grouping
+- Useful for new pattern detection
 
+✔ **Feature engineering**
+- TF–IDF vectorization
+- Template extraction
+- Token masking & template frequency
 
-JSON log parsing
+✔ **Log anomaly detectors**
+- Error burst detector (time-window based volume spikes)
+- New template detector (pattern drift)
+- Semantic Isolation Forest detector (TF-IDF + IForest)
 
+✔ **High-level "AIOps Recipes"**
 
-Unified LogRecord / LogStream abstraction
-
-
-✔ Template extraction (naive Drain-style)
-
-
-Auto-replace numbers, hex, IDs
-
-
-Quick pattern grouping
-
-
-Useful for new pattern detection
-
-
-✔ Feature engineering
-
-
-TF–IDF vectorization
-
-
-Template extraction
-
-
-Token masking & template frequency
-
-
-✔ Log anomaly detectors
-
-
-Error burst detector (time-window based volume spikes)
-
-
-New template detector (pattern drift)
-
-
-Semantic Isolation Forest detector (TF-IDF + IForest)
-
-
-✔ High-level “AIOps Recipes”
 Ready-to-use logic blocks:
+- `ErrorBurstRecipe`
+- `NewErrorPatternRecipe`
+- `CombinedLogHealthRecipe` (semantic + bursts)
 
+✔ **Demo scripts**
 
-ErrorBurstRecipe
-
-
-NewErrorPatternRecipe
-
-
-CombinedLogHealthRecipe (semantic + bursts)
-
-
-✔ Demo scripts
 Fully runnable examples with synthetic logs.
 
-🧱 Project Structure
+## 🧱 Project Structure
+
+```
 signalguard-logs/
   signalguard_logs/
     models/
@@ -103,88 +72,76 @@ signalguard-logs/
       synthetic_error_burst.py
       synthetic_new_pattern.py
       FULL_EXAMPLE.py    # <---- Added below
+```
 
 
-📦 Installation
+## 📦 Installation
+
 You can install the local package for development:
+
+```bash
 pip install -e .
+```
 
-Dependencies (installed automatically):
-
-
-numpy
-
-
-pandas
-
-
-scikit-learn
+**Dependencies** (installed automatically):
+- numpy
+- pandas
+- scikit-learn
 
 
 
-🧰 Core Concepts
-LogRecord
+## 🧰 Core Concepts
+
+### LogRecord
 A single structured log entry:
+```python
 LogRecord(timestamp, level, message, service, extra={})
+```
 
-LogStream
+### LogStream
 A list of records with helpers:
+```python
 stream.filter_level("ERROR")
 stream.filter_service("payments")
 stream.messages()
 stream.timestamps()
+```
 
-Parsing
+### Parsing
+- `RegexLogParser` for plain text logs
+- `JsonLogParser` for structured logs
 
-
-RegexLogParser for plain text logs
-
-
-JsonLogParser for structured logs
-
-
-Template Extraction
+### Template Extraction
 Extract stable patterns:
+```
 "Timeout 3001 on connection abc123ffffffff"
 -> "Timeout <NUM> on connection <HEX>"
+```
 
-Feature Engineering
+### Feature Engineering
+- TF-IDF vectors
+- Template frequency
 
+### Detectors
+- `LogBurstDetector` – time-window volume spikes
+- `NewTemplateDetector` – unseen error patterns
+- `SemanticIForestDetector` – anomaly messages by content
 
-TF-IDF vectors
-
-
-Template frequency
-
-
-Detectors
-
-
-LogBurstDetector – time-window volume spikes
-
-
-NewTemplateDetector – unseen error patterns
-
-
-SemanticIForestDetector – anomaly messages by content
-
-
-Recipes
+### Recipes
 High-level workflows that combine detectors into ready AIOps primitives:
-
-
-ErrorBurstRecipe → detect operational incidents
-
-
-NewErrorPatternRecipe → detect novel error patterns
-
-
-CombinedLogHealthRecipe → semantic + volume + pattern
+- `ErrorBurstRecipe` → detect operational incidents
+- `NewErrorPatternRecipe` → detect novel error patterns
+- `CombinedLogHealthRecipe` → semantic + volume + pattern
 
 
 
-🧪 Full Example (copy into examples/FULL_EXAMPLE.py)
+## 🧪 Full Example
+
+Copy into `examples/FULL_EXAMPLE.py`
+
 This example generates synthetic logs, parses them, extracts templates, and evaluates multiple detectors + recipes.
+
+```python
 """
 FULL DEMO for signalguard-logs
 
@@ -308,33 +265,28 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
 
 
-🎯 Positioning (for recruiters / interviews)
+## 🎯 Positioning (for recruiters / interviews)
+
 You can now pitch signalguard-logs like this:
 
-I built a lightweight AIOps toolkit for logs. It includes parsers, template extraction, semantic vectorization, several anomaly detectors, and opinionated recipes that combine volume bursts, new error patterns, and semantic isolation forest models.
-It acts as the “log intelligence” layer complementing my signalguard-aiops package, so together I can analyze both metrics and logs in a consistent incident pipeline.
+> I built a lightweight AIOps toolkit for logs. It includes parsers, template extraction, semantic vectorization, several anomaly detectors, and opinionated recipes that combine volume bursts, new error patterns, and semantic isolation forest models.
+> It acts as the "log intelligence" layer complementing my signalguard-aiops package, so together I can analyze both metrics and logs in a consistent incident pipeline.
 
+## 🚀 Next Steps (optional upgrades)
 
-🚀 Next Steps (optional upgrades)
-✔ Add BERT / sentence-transformer embeddings
-✔ Add Drain3 or IPLoM real template miners
-✔ Add clustering-based pattern emergence detectors
-✔ Integrate with Loki / Elastic / OpenSearch
-✔ Attach log anomalies to metrics incidents (cross-signal correlation)
+- ✔ Add BERT / sentence-transformer embeddings
+- ✔ Add Drain3 or IPLoM real template miners
+- ✔ Add clustering-based pattern emergence detectors
+- ✔ Integrate with Loki / Elastic / OpenSearch
+- ✔ Attach log anomalies to metrics incidents (cross-signal correlation)
 
 If you want, I can also create:
 
-
-A GitHub Pages mini-dashboard for this log package
-
-
-A combined AI/ML observability architecture diagram
-
-
-A portfolio write-up section for your website
-
-
-A LinkedIn announcement for the trilogy: SignalGuard + signalguard-aiops + signalguard-logs
+- A GitHub Pages mini-dashboard for this log package
+- A combined AI/ML observability architecture diagram
+- A portfolio write-up section for your website
+- A LinkedIn announcement for the trilogy: SignalGuard + signalguard-aiops + signalguard-logs
 
